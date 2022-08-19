@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>311234347031-rjbhv7el286368v61lo34ih2g7c1n3af.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.311234347031-rjbhv7el286368v61lo34ih2g7c1n3af</string>
+	<key>API_KEY</key>
+	<string>AIzaSyALeZ_zSiRc-bzp4WTZRlLVsdG7Lp3-c70</string>
+	<key>GCM_SENDER_ID</key>
+	<string>311234347031</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.backEndNfc</string>
+	<key>PROJECT_ID</key>
+	<string>aplikasi-presensi-bf763</string>
+	<key>STORAGE_BUCKET</key>
+	<string>aplikasi-presensi-bf763.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:311234347031:ios:6ee15aeb73b9da660e1c52</string>
+</dict>
+</plist>
