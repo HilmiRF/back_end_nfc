@@ -1,5 +1,7 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, deprecated_member_use, avoid_print
 
+import 'package:back_end_nfc/authentication_helper.dart';
+import 'package:back_end_nfc/screens/dosen_view.dart';
 import 'package:back_end_nfc/themes.dart';
 import 'package:flutter/material.dart';
 
@@ -165,6 +167,8 @@ class _LoginPageState extends State<LoginPage> {
       margin: EdgeInsets.only(top: 32),
       child: TextButton(
         onPressed: () {
+          final email = emailController.text;
+          final password = passwordController.text;
           setState(() {
             isLoading = true;
           });
@@ -173,13 +177,19 @@ class _LoginPageState extends State<LoginPage> {
             setState(() {
               isLoading = false;
             });
-            if (passwordController.text != '123123') {
-              setState(() {
-                isShowPasswordError = true;
-              });
-            } else {
-              Navigator.pushNamed(context, '/dosen');
-            }
+            AuthenticationHelper()
+                .signIn(email: email, password: password)
+                .then((result) {
+              if (result == null) {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => DosenPage()));
+              } else {
+                setState(() {
+                  isShowPasswordError = true;
+                });
+                print(result);
+              }
+            });
           });
         },
         style: TextButton.styleFrom(

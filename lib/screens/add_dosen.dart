@@ -1,8 +1,9 @@
-// ignore_for_file: prefer_const_constructors, unnecessary_new, unused_local_variable, use_build_context_synchronously, unnecessary_brace_in_string_interps, avoid_print, await_only_futures
+// ignore_for_file: prefer_const_constructors, unnecessary_new, unused_local_variable, use_build_context_synchronously, unnecessary_brace_in_string_interps, avoid_print, await_only_futures, deprecated_member_use
 
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:back_end_nfc/authentication_helper.dart';
 import 'package:back_end_nfc/models/dosen.dart';
 import 'package:back_end_nfc/screens/dosen_view.dart';
 import 'package:back_end_nfc/themes.dart';
@@ -20,9 +21,11 @@ class AddDosen extends StatefulWidget {
 
 class _AddDosenState extends State<AddDosen> {
   late String urlDownload;
-
+  bool _passwordVisible = false;
   final TextEditingController namaDosenController = TextEditingController();
   final TextEditingController nipDosenController = TextEditingController();
+  final TextEditingController emailDosenController = TextEditingController();
+  final TextEditingController passwordDosenController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -155,6 +158,74 @@ class _AddDosenState extends State<AddDosen> {
             },
           ),
         ),
+        // Field Email Dosen
+        Container(
+          margin: EdgeInsets.only(
+            top: 10,
+          ),
+          padding: EdgeInsets.all(18),
+          width: double.infinity,
+          height: 56,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            color: kWhiteColor,
+          ),
+          child: TextFormField(
+            controller: emailDosenController,
+            decoration: InputDecoration.collapsed(
+              hintText: 'Email',
+              hintStyle: greyTextStyle.copyWith(
+                fontSize: 14,
+                fontWeight: semiBold,
+              ),
+            ),
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'Email';
+              }
+              return null;
+            },
+          ),
+        ),
+        // Field Password Dosen
+        Container(
+          margin: EdgeInsets.only(
+            top: 10,
+          ),
+          padding: EdgeInsets.all(18),
+          decoration: BoxDecoration(
+            color: kWhiteColor,
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextFormField(
+                  controller: passwordDosenController,
+                  obscureText: !_passwordVisible,
+                  decoration: InputDecoration.collapsed(
+                    hintText: 'Password',
+                    hintStyle: greyTextStyle.copyWith(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+              IconButton(
+                color: kGreyColor,
+                icon: Icon(Icons.visibility_outlined),
+                onPressed: () {
+                  setState(() {
+                    _passwordVisible = !_passwordVisible;
+                  });
+                },
+                padding: EdgeInsets.zero,
+                constraints: BoxConstraints(),
+              ),
+            ],
+          ),
+        ),
         Container(
           margin: EdgeInsets.only(
             top: 10,
@@ -217,16 +288,28 @@ class _AddDosenState extends State<AddDosen> {
               // code untuk submit ke firebase
               final namaDosen = namaDosenController.text;
               final nipDosen = nipDosenController.text;
+              final emailDosen = emailDosenController.text;
+              final passwordDosen = passwordDosenController.text;
+              AuthenticationHelper()
+                  .signUp(email: emailDosen, password: passwordDosen)
+                  .then((result) {
+                if (result == null) {
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => DosenPage()));
+                } else {
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      result,
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ));
+                }
+              });
               createDosen(
                 namaDosen: namaDosen,
                 nipDosen: nipDosen,
                 imageURL: urlDownload,
-              );
-              Navigator.push(
-                context,
-                new MaterialPageRoute(
-                  builder: (context) => new DosenPage(),
-                ),
+                emailDosen: emailDosen,
               );
               // add code above
             },
@@ -247,6 +330,7 @@ class _AddDosenState extends State<AddDosen> {
     required String namaDosen,
     required String nipDosen,
     required String imageURL,
+    required String emailDosen,
   }) async {
     final docDosen = FirebaseFirestore.instance.collection('dosen').doc();
 
@@ -255,6 +339,7 @@ class _AddDosenState extends State<AddDosen> {
       nipDosen: nipDosen,
       id: docDosen.id,
       imageURL: imageURL,
+      emailDosen: emailDosen,
     );
 
     final json = dosen.toJson();
