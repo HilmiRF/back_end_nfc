@@ -68,7 +68,7 @@ class _DosenPageState extends State<DosenPage> {
   Widget buildDosen(Dosen dosen) => Container(
         margin: EdgeInsets.all(10),
         width: double.infinity,
-        height: 100,
+        height: 130,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
           color: kLineDarkColor,

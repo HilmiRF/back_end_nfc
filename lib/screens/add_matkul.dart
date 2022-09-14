@@ -19,13 +19,6 @@ class _AddMatkulState extends State<AddMatkul> {
   final TextEditingController namaMatkulController = TextEditingController();
   final TextEditingController kodeMatkulController = TextEditingController();
   final TextEditingController sksMatkulController = TextEditingController();
-  final TextEditingController hariMatkulController = TextEditingController();
-  final TextEditingController waktuMulaiMatkulController =
-      TextEditingController();
-  final TextEditingController waktuSelesaiMatkulController =
-      TextEditingController();
-  final TextEditingController ruangMatkulController = TextEditingController();
-  final TextEditingController jumlahPesertaController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -187,151 +180,6 @@ class _AddMatkulState extends State<AddMatkul> {
             },
           ),
         ),
-        // Field Hari Mata Kuliah
-        Container(
-          margin: EdgeInsets.only(
-            top: 10,
-          ),
-          padding: EdgeInsets.all(18),
-          width: double.infinity,
-          height: 56,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            color: kWhiteColor,
-          ),
-          child: TextFormField(
-            controller: hariMatkulController,
-            decoration: InputDecoration.collapsed(
-              hintText: 'Hari Mata Kuliah',
-              hintStyle: greyTextStyle.copyWith(
-                fontSize: 14,
-                fontWeight: semiBold,
-              ),
-            ),
-            validator: (value) {
-              if (value!.isEmpty) {
-                return 'Hari Mata Kuliah';
-              }
-              return null;
-            },
-          ),
-        ),
-        // Field Waktu Mulai Mata Kuliah
-        Container(
-          margin: EdgeInsets.only(
-            top: 10,
-          ),
-          padding: EdgeInsets.all(18),
-          width: double.infinity,
-          height: 56,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            color: kWhiteColor,
-          ),
-          child: TextFormField(
-            controller: waktuMulaiMatkulController,
-            decoration: InputDecoration.collapsed(
-              hintText: 'Waktu Mulai Mata Kuliah',
-              hintStyle: greyTextStyle.copyWith(
-                fontSize: 14,
-                fontWeight: semiBold,
-              ),
-            ),
-            validator: (value) {
-              if (value!.isEmpty) {
-                return 'Waktu Mulai Mata Kuliah';
-              }
-              return null;
-            },
-          ),
-        ),
-        // Field Waktu Mulai Mata Kuliah
-        Container(
-          margin: EdgeInsets.only(
-            top: 10,
-          ),
-          padding: EdgeInsets.all(18),
-          width: double.infinity,
-          height: 56,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            color: kWhiteColor,
-          ),
-          child: TextFormField(
-            controller: waktuSelesaiMatkulController,
-            decoration: InputDecoration.collapsed(
-              hintText: 'Waktu Selesai Mata Kuliah',
-              hintStyle: greyTextStyle.copyWith(
-                fontSize: 14,
-                fontWeight: semiBold,
-              ),
-            ),
-            validator: (value) {
-              if (value!.isEmpty) {
-                return 'Waktu Selesai Mata Kuliah';
-              }
-              return null;
-            },
-          ),
-        ),
-        // Field Ruang Mata Kuliah
-        Container(
-          margin: EdgeInsets.only(
-            top: 10,
-          ),
-          padding: EdgeInsets.all(18),
-          width: double.infinity,
-          height: 56,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            color: kWhiteColor,
-          ),
-          child: TextFormField(
-            controller: ruangMatkulController,
-            decoration: InputDecoration.collapsed(
-              hintText: 'Ruang Mata Kuliah',
-              hintStyle: greyTextStyle.copyWith(
-                fontSize: 14,
-                fontWeight: semiBold,
-              ),
-            ),
-            validator: (value) {
-              if (value!.isEmpty) {
-                return 'Ruang Mata Kuliah';
-              }
-              return null;
-            },
-          ),
-        ),
-        // Field Jumlah Peserta MA
-        Container(
-          margin: EdgeInsets.only(
-            top: 10,
-          ),
-          padding: EdgeInsets.all(18),
-          width: double.infinity,
-          height: 56,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            color: kWhiteColor,
-          ),
-          child: TextFormField(
-            controller: jumlahPesertaController,
-            decoration: InputDecoration.collapsed(
-              hintText: 'Jumlah Peserta Mata Kuliah',
-              hintStyle: greyTextStyle.copyWith(
-                fontSize: 14,
-                fontWeight: semiBold,
-              ),
-            ),
-            validator: (value) {
-              if (value!.isEmpty) {
-                return 'Jumlah Peserta Kuliah';
-              }
-              return null;
-            },
-          ),
-        ),
       ],
     );
   }
@@ -351,22 +199,12 @@ class _AddMatkulState extends State<AddMatkul> {
         onPressed: () {
           // code untuk submit ke firebase
           final namaMatkul = namaMatkulController.text;
-          final waktuSelesaiMatkul = waktuSelesaiMatkulController.text;
-          final waktuMulaiMatkul = waktuMulaiMatkulController.text;
-          final hariMatkul = hariMatkulController.text;
-          final jumlahMHS = jumlahPesertaController.text;
           final kodeMatkul = kodeMatkulController.text;
-          final ruangMatkul = ruangMatkulController.text;
           final sksMatkul = sksMatkulController.text;
           createMatkul(
             namaMatkul: namaMatkul,
-            waktuSelesaiMatkul: waktuSelesaiMatkul,
-            hariMatkul: hariMatkul,
-            jumlahMHS: jumlahMHS,
             kodeMatkul: kodeMatkul,
-            ruangMatkul: ruangMatkul,
             sksMatkul: sksMatkul,
-            waktuMulaiMatkul: waktuMulaiMatkul,
           );
           Navigator.push(
             context,
@@ -387,26 +225,17 @@ class _AddMatkulState extends State<AddMatkul> {
     );
   }
 
-  Future createMatkul(
-      {required String namaMatkul,
-      required String kodeMatkul,
-      required String sksMatkul,
-      required String hariMatkul,
-      required String waktuMulaiMatkul,
-      required String waktuSelesaiMatkul,
-      required String ruangMatkul,
-      required String jumlahMHS}) async {
+  Future createMatkul({
+    required String namaMatkul,
+    required String kodeMatkul,
+    required String sksMatkul,
+  }) async {
     final docMatkul = FirebaseFirestore.instance.collection('matkul').doc();
 
     final matkul = Matkul(
       namaMatkul: namaMatkul,
       kodeMatkul: kodeMatkul,
       sksMatkul: sksMatkul,
-      hariMatkul: hariMatkul,
-      waktuMulaiMatkul: waktuMulaiMatkul,
-      waktuSelesaiMatkul: waktuSelesaiMatkul,
-      ruangMatkul: ruangMatkul,
-      jumlahMHS: jumlahMHS,
       id: docMatkul.id,
     );
 

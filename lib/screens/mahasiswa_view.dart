@@ -66,99 +66,101 @@ class _MahasiswaPageState extends State<MahasiswaPage> {
     );
   }
 
-  Widget buildMahasiswa(Mahasiswa mahasiswa) => Container(
-        margin: EdgeInsets.all(10),
-        width: double.infinity,
-        height: 100,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
-          color: kLineDarkColor,
-        ),
-        child: Column(
-          children: [
-            ListTile(
-              title: Text(
-                mahasiswa.namaMahasiswa,
-                style: blackTextStyle.copyWith(
-                  fontSize: 16,
-                  fontWeight: semiBold,
+  Widget buildMahasiswa(Mahasiswa mahasiswa) => Expanded(
+        child: Container(
+          margin: EdgeInsets.all(10),
+          width: double.infinity,
+          height: 130,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            color: kLineDarkColor,
+          ),
+          child: Column(
+            children: [
+              ListTile(
+                title: Text(
+                  mahasiswa.namaMahasiswa,
+                  style: blackTextStyle.copyWith(
+                    fontSize: 16,
+                    fontWeight: semiBold,
+                  ),
+                ),
+                subtitle: Text(
+                  'NIM: ${mahasiswa.nimMahasiswa}',
+                  style: greyTextStyle.copyWith(
+                    fontSize: 12,
+                    fontWeight: regular,
+                  ),
                 ),
               ),
-              subtitle: Text(
-                'NIM: ${mahasiswa.nimMahasiswa}',
-                style: greyTextStyle.copyWith(
-                  fontSize: 12,
-                  fontWeight: regular,
-                ),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 10,
-                ),
-                Container(
-                  margin: EdgeInsets.only(
-                    right: 10,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: 10,
                   ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: kBlackColor,
-                  ),
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => UpdateMahasiswa(
-                            nama: mahasiswa.namaMahasiswa,
-                            nim: mahasiswa.nimMahasiswa,
-                            id: mahasiswa.id,
+                  Container(
+                    margin: EdgeInsets.only(
+                      right: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: kBlackColor,
+                    ),
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UpdateMahasiswa(
+                              nama: mahasiswa.namaMahasiswa,
+                              nim: mahasiswa.nimMahasiswa,
+                              id: mahasiswa.id,
+                            ),
                           ),
+                        );
+                      },
+                      child: Text(
+                        'Update',
+                        style: whiteTextStyle.copyWith(
+                          fontSize: 14,
+                          fontWeight: regular,
                         ),
-                      );
-                    },
-                    child: Text(
-                      'Update',
-                      style: whiteTextStyle.copyWith(
-                        fontSize: 14,
-                        fontWeight: regular,
                       ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  width: 5,
-                ),
-                Container(
-                  margin: EdgeInsets.only(
-                    right: 10,
+                  SizedBox(
+                    width: 5,
                   ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: kBlackColor,
-                  ),
-                  child: TextButton(
-                    onPressed: () {
-                      final docMahasiswa = FirebaseFirestore.instance
-                          .collection('mahasiswa')
-                          .doc(mahasiswa.id);
+                  Container(
+                    margin: EdgeInsets.only(
+                      right: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: kBlackColor,
+                    ),
+                    child: TextButton(
+                      onPressed: () {
+                        final docMahasiswa = FirebaseFirestore.instance
+                            .collection('mahasiswa')
+                            .doc(mahasiswa.id);
 
-                      docMahasiswa.delete();
-                    },
-                    child: Text(
-                      'Delete',
-                      style: whiteTextStyle.copyWith(
-                        fontSize: 14,
-                        fontWeight: regular,
+                        docMahasiswa.delete();
+                      },
+                      child: Text(
+                        'Delete',
+                        style: whiteTextStyle.copyWith(
+                          fontSize: 14,
+                          fontWeight: regular,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       );
 

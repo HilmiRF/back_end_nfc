@@ -68,7 +68,7 @@ class _MatkulPageState extends State<MatkulPage> {
   Widget buildMatkul(Matkul matkul) => Container(
         margin: EdgeInsets.all(10),
         width: double.infinity,
-        height: 100,
+        height: 130,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
           color: kLineDarkColor,
@@ -84,7 +84,7 @@ class _MatkulPageState extends State<MatkulPage> {
                 ),
               ),
               subtitle: Text(
-                'Kode Kelas: ${matkul.kodeMatkul}, SKS Kelas: ${matkul.sksMatkul}, Hari Kelas: ${matkul.hariMatkul}, Waktu Kelas: ${matkul.waktuMulaiMatkul} - ${matkul.waktuSelesaiMatkul}, Ruang Kelas: ${matkul.ruangMatkul}, Jumlah Mahasiswa: ${matkul.jumlahMHS}',
+                'Kode Kelas: ${matkul.kodeMatkul}, SKS Kelas: ${matkul.sksMatkul}',
                 style: greyTextStyle.copyWith(
                   fontSize: 12,
                   fontWeight: regular,
@@ -111,14 +111,9 @@ class _MatkulPageState extends State<MatkulPage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => UpdateMatkul(
-                            hari: matkul.hariMatkul,
                             id: matkul.id,
-                            jumlah: matkul.jumlahMHS,
                             kode: matkul.kodeMatkul,
-                            mulai: matkul.waktuMulaiMatkul,
                             nama: matkul.namaMatkul,
-                            ruang: matkul.ruangMatkul,
-                            selesai: matkul.waktuSelesaiMatkul,
                             sks: matkul.sksMatkul,
                           ),
                         ),

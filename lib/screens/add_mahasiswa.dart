@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:nfc_manager/nfc_manager.dart';
 
 class AddMahasiswa extends StatefulWidget {
   const AddMahasiswa({Key? key}) : super(key: key);
@@ -15,8 +16,11 @@ class AddMahasiswa extends StatefulWidget {
   State<AddMahasiswa> createState() => _AddMahasiswaState();
 }
 
+late String idMHS;
+
 class _AddMahasiswaState extends State<AddMahasiswa> {
-  late String urlDownload;
+  ValueNotifier<dynamic> result = ValueNotifier(null);
+  late String urlDownload = '';
   final TextEditingController namaMahasiswaController = TextEditingController();
   final TextEditingController nimMahasiswaController = TextEditingController();
   @override
@@ -37,6 +41,10 @@ class _AddMahasiswaState extends State<AddMahasiswa> {
               height: 10,
             ),
             addMahasiswa(),
+            SizedBox(
+              height: 10,
+            ),
+            registerNFC(),
           ],
         ),
       ),
@@ -150,45 +158,45 @@ class _AddMahasiswaState extends State<AddMahasiswa> {
             },
           ),
         ),
-        // Upload Image Dosen
-        Container(
-          margin: EdgeInsets.only(
-            top: 10,
-          ),
-          width: double.infinity,
-          height: 56,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            color: kBlackColor,
-          ),
-          child: TextButton(
-            onPressed: () async {
-              final result = await FilePicker.platform
-                  .pickFiles(type: FileType.any, allowMultiple: false);
+        // Upload Image Mahasiswa
+        // Container(
+        //   margin: EdgeInsets.only(
+        //     top: 10,
+        //   ),
+        //   width: double.infinity,
+        //   height: 56,
+        //   decoration: BoxDecoration(
+        //     borderRadius: BorderRadius.circular(14),
+        //     color: kBlackColor,
+        //   ),
+        //   child: TextButton(
+        //     onPressed: () async {
+        //       final result = await FilePicker.platform
+        //           .pickFiles(type: FileType.any, allowMultiple: false);
 
-              if (result != null && result.files.isNotEmpty) {
-                final fileBytes = result.files.first.bytes;
-                final fileName = result.files.first.name;
+        //       if (result != null && result.files.isNotEmpty) {
+        //         final fileBytes = result.files.first.bytes;
+        //         final fileName = result.files.first.name;
 
-                // upload file
-                final upload = await FirebaseStorage.instance
-                    .ref('image/mahasiswa/$fileName')
-                    .putData(fileBytes!);
+        //         // upload file
+        //         final upload = await FirebaseStorage.instance
+        //             .ref('image/mahasiswa/$fileName')
+        //             .putData(fileBytes!);
 
-                urlDownload = await upload.ref.getDownloadURL();
+        //         urlDownload = await upload.ref.getDownloadURL();
 
-                print(urlDownload);
-              }
-            },
-            child: Text(
-              'Pick Image Mahasiswa',
-              style: whiteTextStyle.copyWith(
-                fontSize: 18,
-                fontWeight: semiBold,
-              ),
-            ),
-          ),
-        ),
+        //         print(urlDownload);
+        //       }
+        //     },
+        //     child: Text(
+        //       'Pick Image Mahasiswa',
+        //       style: whiteTextStyle.copyWith(
+        //         fontSize: 18,
+        //         fontWeight: semiBold,
+        //       ),
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }
@@ -213,16 +221,113 @@ class _AddMahasiswaState extends State<AddMahasiswa> {
             namaMahasiswa: namaMahasiswa,
             nimMahasiswa: nimMahasiswa,
           );
-          Navigator.push(
-            context,
-            new MaterialPageRoute(
-              builder: (context) => new MahasiswaPage(),
-            ),
-          );
+          // Navigator.push(
+          //   context,
+          //   new MaterialPageRoute(
+          //     builder: (context) => new MahasiswaPage(),
+          //   ),
+          // );
           // add code above
         },
         child: Text(
           'Create Mahasiswa',
+          style: whiteTextStyle.copyWith(
+            fontSize: 18,
+            fontWeight: semiBold,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget registerNFC() {
+    return Container(
+      margin: EdgeInsets.only(
+        top: 10,
+      ),
+      width: double.infinity,
+      height: 56,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+        color: kBlackColor,
+      ),
+      child: TextButton(
+        onPressed: () async {
+          final namaMahasiswa = namaMahasiswaController.text;
+          final nimMahasiswa = nimMahasiswaController.text;
+          bool isAvailable = await NfcManager.instance.isAvailable();
+          NfcManager.instance.startSession(
+            onDiscovered: (NfcTag tag) async {
+              var ndef = Ndef.from(tag);
+              if (ndef == null || !ndef.isWritable) {
+                NfcManager.instance.stopSession(errorMessage: result.value);
+                return;
+              }
+              NdefMessage messageNama = NdefMessage([
+                NdefRecord.createText('NFC ID: $idMHS'),
+                NdefRecord.createText('Nama: $namaMahasiswa'),
+                NdefRecord.createText('NIM: $nimMahasiswa'),
+                // NdefRecord.createUri(Uri.parse(urlDownload))
+              ]);
+              try {
+                await ndef.write(messageNama);
+                result.value = 'Success to "Ndef Write"';
+                NfcManager.instance.stopSession();
+              } catch (e) {
+                result.value = e;
+                NfcManager.instance
+                    .stopSession(errorMessage: result.value.toString());
+                return;
+              }
+            },
+          );
+          showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+              title: Text(
+                "Place student card on NFC Reader/Writer",
+                style: blackTextStyle.copyWith(
+                  fontSize: 18,
+                  fontWeight: semiBold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              actions: [
+                Container(
+                  width: double.infinity,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14),
+                    color: kBlackColor,
+                  ),
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.push(
+                        context,
+                        new MaterialPageRoute(
+                          builder: (context) => new MahasiswaPage(),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'Done',
+                      style: whiteTextStyle.copyWith(
+                        fontSize: 18,
+                        fontWeight: semiBold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+        child: Text(
+          'Register Mahasiswa to NFC',
           style: whiteTextStyle.copyWith(
             fontSize: 18,
             fontWeight: semiBold,
@@ -245,6 +350,8 @@ class _AddMahasiswaState extends State<AddMahasiswa> {
       id: docMahasiswa.id,
       imageURL: urlDownload,
     );
+
+    idMHS = docMahasiswa.id;
 
     final json = mahasiswa.toJson();
 

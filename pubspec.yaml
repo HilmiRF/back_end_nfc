@@ -41,6 +41,7 @@ dependencies:
   firebase_storage: ^10.3.5
   file_picker: ^4.5.1
   firebase_auth: ^3.6.4
+  nfc_manager: ^3.1.1
 
 dev_dependencies:
   flutter_test:
