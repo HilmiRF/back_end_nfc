@@ -204,7 +204,7 @@ class _AddMatkulState extends State<AddMatkul> {
           createMatkul(
             namaMatkul: namaMatkul,
             kodeMatkul: kodeMatkul,
-            sksMatkul: sksMatkul,
+            sksMatkul: '$sksMatkul SKS',
           );
           Navigator.push(
             context,

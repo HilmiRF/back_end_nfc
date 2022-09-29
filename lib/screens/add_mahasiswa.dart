@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, unnecessary_new, avoid_print
+// ignore_for_file: prefer_const_constructors, unnecessary_new, avoid_print, use_build_context_synchronously
 
 import 'package:back_end_nfc/models/mahasiswa.dart';
 import 'package:back_end_nfc/screens/mahasiswa_view.dart';
@@ -273,6 +273,13 @@ class _AddMahasiswaState extends State<AddMahasiswa> {
                 await ndef.write(messageNama);
                 result.value = 'Success to "Ndef Write"';
                 NfcManager.instance.stopSession();
+                Navigator.of(context).pop();
+                Navigator.push(
+                  context,
+                  new MaterialPageRoute(
+                    builder: (context) => new MahasiswaPage(),
+                  ),
+                );
               } catch (e) {
                 result.value = e;
                 NfcManager.instance
@@ -306,15 +313,15 @@ class _AddMahasiswaState extends State<AddMahasiswa> {
                   child: TextButton(
                     onPressed: () {
                       Navigator.of(context).pop();
-                      Navigator.push(
-                        context,
-                        new MaterialPageRoute(
-                          builder: (context) => new MahasiswaPage(),
-                        ),
-                      );
+                      // Navigator.push(
+                      //   context,
+                      //   new MaterialPageRoute(
+                      //     builder: (context) => new MahasiswaPage(),
+                      //   ),
+                      // );
                     },
                     child: Text(
-                      'Done',
+                      'Cancel',
                       style: whiteTextStyle.copyWith(
                         fontSize: 18,
                         fontWeight: semiBold,

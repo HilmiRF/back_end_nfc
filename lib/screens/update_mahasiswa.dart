@@ -1,9 +1,10 @@
-// ignore_for_file: prefer_const_constructors, unnecessary_new
+// ignore_for_file: prefer_const_constructors, unnecessary_new, use_build_context_synchronously
 
 import 'package:back_end_nfc/screens/mahasiswa_view.dart';
 import 'package:back_end_nfc/themes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:nfc_manager/nfc_manager.dart';
 
 class UpdateMahasiswa extends StatefulWidget {
   final String nama;
@@ -18,10 +19,12 @@ class UpdateMahasiswa extends StatefulWidget {
 }
 
 class _UpdateMahasiswaState extends State<UpdateMahasiswa> {
+  ValueNotifier<dynamic> result = ValueNotifier(null);
   late TextEditingController namaMahasiswaController =
       TextEditingController(text: widget.nama);
   late TextEditingController nimMahasiswaController =
       TextEditingController(text: widget.nim);
+  late String idMHS = widget.id;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -41,6 +44,7 @@ class _UpdateMahasiswaState extends State<UpdateMahasiswa> {
               height: 10,
             ),
             updateMahasiswa(),
+            registerNFC()
           ],
         ),
       ),
@@ -158,6 +162,110 @@ class _UpdateMahasiswaState extends State<UpdateMahasiswa> {
     );
   }
 
+  Widget registerNFC() {
+    return Container(
+      margin: EdgeInsets.only(
+        top: 10,
+      ),
+      width: double.infinity,
+      height: 56,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+        color: kBlackColor,
+      ),
+      child: TextButton(
+        onPressed: () async {
+          final namaMahasiswa = namaMahasiswaController.text;
+          final nimMahasiswa = nimMahasiswaController.text;
+          bool isAvailable = await NfcManager.instance.isAvailable();
+          NfcManager.instance.startSession(
+            onDiscovered: (NfcTag tag) async {
+              var ndef = Ndef.from(tag);
+              if (ndef == null || !ndef.isWritable) {
+                NfcManager.instance.stopSession(errorMessage: result.value);
+                return;
+              }
+              NdefMessage messageNama = NdefMessage([
+                NdefRecord.createText('NFC ID: $idMHS'),
+                NdefRecord.createText('Nama: $namaMahasiswa'),
+                NdefRecord.createText('NIM: $nimMahasiswa'),
+                // NdefRecord.createUri(Uri.parse(urlDownload))
+              ]);
+              try {
+                await ndef.write(messageNama);
+                result.value = 'Success to "Ndef Write"';
+                NfcManager.instance.stopSession();
+                Navigator.of(context).pop();
+                Navigator.push(
+                  context,
+                  new MaterialPageRoute(
+                    builder: (context) => new MahasiswaPage(),
+                  ),
+                );
+              } catch (e) {
+                result.value = e;
+                NfcManager.instance
+                    .stopSession(errorMessage: result.value.toString());
+                return;
+              }
+            },
+          );
+          showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+              title: Text(
+                "Place student card on NFC Reader/Writer",
+                style: blackTextStyle.copyWith(
+                  fontSize: 18,
+                  fontWeight: semiBold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              actions: [
+                Container(
+                  width: double.infinity,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14),
+                    color: kBlackColor,
+                  ),
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      // Navigator.push(
+                      //   context,
+                      //   new MaterialPageRoute(
+                      //     builder: (context) => new MahasiswaPage(),
+                      //   ),
+                      // );
+                    },
+                    child: Text(
+                      'Cancel',
+                      style: whiteTextStyle.copyWith(
+                        fontSize: 18,
+                        fontWeight: semiBold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+        child: Text(
+          'Register Mahasiswa to NFC',
+          style: whiteTextStyle.copyWith(
+            fontSize: 18,
+            fontWeight: semiBold,
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget updateMahasiswa() {
     return Container(
       margin: EdgeInsets.only(
@@ -180,12 +288,12 @@ class _UpdateMahasiswaState extends State<UpdateMahasiswa> {
             'nama_mahasiswa': namaMahasiswa,
             'nim_mahasiswa': nimMahasiswa,
           });
-          Navigator.push(
-            context,
-            new MaterialPageRoute(
-              builder: (context) => new MahasiswaPage(),
-            ),
-          );
+          // Navigator.push(
+          //   context,
+          //   new MaterialPageRoute(
+          //     builder: (context) => new MahasiswaPage(),
+          //   ),
+          // );
           // add code above
         },
         child: Text(

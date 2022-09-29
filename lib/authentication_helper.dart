@@ -1,6 +1,8 @@
 // ignore_for_file: unused_local_variable, avoid_print
 
+import 'package:back_end_nfc/themes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class AuthenticationHelper {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -32,7 +34,9 @@ class AuthenticationHelper {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       return null;
     } on FirebaseAuthException catch (e) {
+      print(e.toString());
       return e.message;
+      // return 'Not Signed in';
     }
   }
 

@@ -20,7 +20,9 @@ class AddDosen extends StatefulWidget {
 }
 
 class _AddDosenState extends State<AddDosen> {
-  late String urlDownload;
+  PlatformFile? pickedFile;
+  UploadTask? uploadTask;
+  String urlDownload = '';
   bool _passwordVisible = false;
   final TextEditingController namaDosenController = TextEditingController();
   final TextEditingController nipDosenController = TextEditingController();
@@ -238,22 +240,48 @@ class _AddDosenState extends State<AddDosen> {
           ),
           child: TextButton(
             onPressed: () async {
-              final result = await FilePicker.platform
-                  .pickFiles(type: FileType.any, allowMultiple: false);
+              final result = await FilePicker.platform.pickFiles(
+                type: FileType.custom,
+                allowMultiple: false,
+                allowedExtensions: ['jpg', 'png'],
+              );
 
-              if (result != null && result.files.isNotEmpty) {
-                final fileBytes = result.files.first.bytes;
-                final fileName = result.files.first.name;
+              if (result == null) return;
 
-                // upload file
-                final upload = await FirebaseStorage.instance
-                    .ref('image/dosen/$fileName')
-                    .putData(fileBytes!);
+              setState(() {
+                pickedFile = result.files.first;
+              });
 
-                urlDownload = await upload.ref.getDownloadURL();
+              final path = 'image/dosen/${pickedFile!.name}';
+              final file = File(pickedFile!.path!);
 
-                print(urlDownload);
-              }
+              final ref = await FirebaseStorage.instance.ref().child(path);
+              uploadTask = ref.putFile(file);
+
+              final snapshot = await uploadTask!.whenComplete(() {});
+
+              urlDownload = await snapshot.ref.getDownloadURL();
+
+              // FilePickerResult? result = await FilePicker.platform.pickFiles(
+              //   type: FileType.custom,
+              //   allowMultiple: false,
+              //   allowedExtensions: ['jpg', 'png'],
+              // );
+              // dalam ref => 'image/dosen/$fileName'
+
+              // if (result != null) {
+              //   Uint8List? fileBytes = result.files.first.bytes;
+              //   String fileName = result.files.first.name;
+
+              //   // upload file
+              //   final upload = await FirebaseStorage.instance
+              //       .ref('image/dosen/$fileName')
+              //       .putData(fileBytes!);
+
+              //   urlDownload = await upload.ref.getDownloadURL();
+
+              //   print(urlDownload);
+              // }
             },
             child: Text(
               'Pick Image Dosen',

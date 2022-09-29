@@ -1,9 +1,11 @@
-// ignore_for_file: prefer_const_constructors, deprecated_member_use, avoid_print
+// ignore_for_file: prefer_const_constructors, deprecated_member_use, avoid_print, use_build_context_synchronously
 
 import 'package:back_end_nfc/authentication_helper.dart';
 import 'package:back_end_nfc/screens/dosen_view.dart';
 import 'package:back_end_nfc/themes.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);

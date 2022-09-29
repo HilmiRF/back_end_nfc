@@ -28,7 +28,7 @@ class _UpdateMatkulState extends State<UpdateMatkul> {
   late TextEditingController kodeMatkulController =
       TextEditingController(text: widget.kode);
   late TextEditingController sksMatkulController =
-      TextEditingController(text: widget.sks);
+      TextEditingController(text: widget.sks.substring(0, 1));
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -216,7 +216,7 @@ class _UpdateMatkulState extends State<UpdateMatkul> {
           docMatkul.update({
             'nama_kelas': namaMatkul,
             'kode_kelas': kodeMatkul,
-            'sks_kelas': sksMatkul,
+            'sks_kelas': '$sksMatkul SKS',
             'id': docMatkul.id,
           });
           Navigator.push(
