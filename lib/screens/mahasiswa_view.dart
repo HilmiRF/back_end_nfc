@@ -132,31 +132,6 @@ class _MahasiswaPageState extends State<MahasiswaPage> {
                   SizedBox(
                     width: 5,
                   ),
-                  Container(
-                    margin: EdgeInsets.only(
-                      right: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: kBlackColor,
-                    ),
-                    child: TextButton(
-                      onPressed: () {
-                        final docMahasiswa = FirebaseFirestore.instance
-                            .collection('mahasiswa')
-                            .doc(mahasiswa.id);
-
-                        docMahasiswa.delete();
-                      },
-                      child: Text(
-                        'Delete',
-                        style: whiteTextStyle.copyWith(
-                          fontSize: 14,
-                          fontWeight: regular,
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ],

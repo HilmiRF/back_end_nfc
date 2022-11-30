@@ -140,11 +140,69 @@ class _DosenPageState extends State<DosenPage> {
                   ),
                   child: TextButton(
                     onPressed: () {
-                      final docDosen = FirebaseFirestore.instance
-                          .collection('dosen')
-                          .doc(dosen.id);
+                      showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                          title: Text(
+                            "Are You Sure You Want to Delete the Data?",
+                            style: blackTextStyle.copyWith(
+                              fontSize: 18,
+                              fontWeight: semiBold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          actions: [
+                            Container(
+                              // width: double.infinity,
+                              height: 56,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(14),
+                                color: kBlackColor,
+                              ),
+                              child: TextButton(
+                                onPressed: () {
+                                  Navigator.of(_).pop();
+                                },
+                                child: Text(
+                                  'Cancel',
+                                  style: whiteTextStyle.copyWith(
+                                    fontSize: 18,
+                                    fontWeight: semiBold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              // width: double.infinity,
+                              height: 56,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(14),
+                                color: kBlackColor,
+                              ),
+                              child: TextButton(
+                                onPressed: () {
+                                  final docDosen = FirebaseFirestore.instance
+                                      .collection('dosen')
+                                      .doc(dosen.id);
 
-                      docDosen.delete();
+                                  docDosen.delete();
+                                  Navigator.of(_).pop();
+                                },
+                                child: Text(
+                                  'Delete',
+                                  style: whiteTextStyle.copyWith(
+                                    fontSize: 18,
+                                    fontWeight: semiBold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
                     },
                     child: Text(
                       'Delete',

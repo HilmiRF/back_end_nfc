@@ -19,6 +19,7 @@ class AddMahasiswa extends StatefulWidget {
 late String idMHS;
 
 class _AddMahasiswaState extends State<AddMahasiswa> {
+  bool isDataError = false;
   ValueNotifier<dynamic> result = ValueNotifier(null);
   late String urlDownload = '';
   final TextEditingController namaMahasiswaController = TextEditingController();
@@ -158,45 +159,14 @@ class _AddMahasiswaState extends State<AddMahasiswa> {
             },
           ),
         ),
-        // Upload Image Mahasiswa
-        // Container(
-        //   margin: EdgeInsets.only(
-        //     top: 10,
-        //   ),
-        //   width: double.infinity,
-        //   height: 56,
-        //   decoration: BoxDecoration(
-        //     borderRadius: BorderRadius.circular(14),
-        //     color: kBlackColor,
-        //   ),
-        //   child: TextButton(
-        //     onPressed: () async {
-        //       final result = await FilePicker.platform
-        //           .pickFiles(type: FileType.any, allowMultiple: false);
-
-        //       if (result != null && result.files.isNotEmpty) {
-        //         final fileBytes = result.files.first.bytes;
-        //         final fileName = result.files.first.name;
-
-        //         // upload file
-        //         final upload = await FirebaseStorage.instance
-        //             .ref('image/mahasiswa/$fileName')
-        //             .putData(fileBytes!);
-
-        //         urlDownload = await upload.ref.getDownloadURL();
-
-        //         print(urlDownload);
-        //       }
-        //     },
-        //     child: Text(
-        //       'Pick Image Mahasiswa',
-        //       style: whiteTextStyle.copyWith(
-        //         fontSize: 18,
-        //         fontWeight: semiBold,
-        //       ),
-        //     ),
-        //   ),
-        // ),
+        if (isDataError == true)
+          Container(
+            margin: EdgeInsets.only(top: 10),
+            child: Text(
+              'Masukkan Data dengan Lengkap',
+              style: redTextStyle,
+            ),
+          ),
       ],
     );
   }
@@ -214,13 +184,22 @@ class _AddMahasiswaState extends State<AddMahasiswa> {
       ),
       child: TextButton(
         onPressed: () {
-          // code untuk submit ke firebase
-          final namaMahasiswa = namaMahasiswaController.text;
-          final nimMahasiswa = nimMahasiswaController.text;
-          createMahasiswa(
-            namaMahasiswa: namaMahasiswa,
-            nimMahasiswa: nimMahasiswa,
-          );
+          if (namaMahasiswaController.text.isNotEmpty &&
+              nimMahasiswaController.text.isNotEmpty) {
+            // code untuk submit ke firebase
+            final namaMahasiswa = namaMahasiswaController.text;
+            final nimMahasiswa = nimMahasiswaController.text;
+            createMahasiswa(
+              namaMahasiswa: namaMahasiswa,
+              nimMahasiswa: nimMahasiswa,
+            );
+          } else {
+            setState(() {
+              isDataError = true;
+            });
+            print('Isi Data');
+          }
+
           // Navigator.push(
           //   context,
           //   new MaterialPageRoute(

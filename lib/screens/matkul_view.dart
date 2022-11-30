@@ -141,11 +141,69 @@ class _MatkulPageState extends State<MatkulPage> {
                   ),
                   child: TextButton(
                     onPressed: () {
-                      final docMatkul = FirebaseFirestore.instance
-                          .collection('matkul')
-                          .doc(matkul.id);
+                      showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                          title: Text(
+                            "Are You Sure You Want to Delete the Data?",
+                            style: blackTextStyle.copyWith(
+                              fontSize: 18,
+                              fontWeight: semiBold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          actions: [
+                            Container(
+                              // width: double.infinity,
+                              height: 56,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(14),
+                                color: kBlackColor,
+                              ),
+                              child: TextButton(
+                                onPressed: () {
+                                  Navigator.of(_).pop();
+                                },
+                                child: Text(
+                                  'Cancel',
+                                  style: whiteTextStyle.copyWith(
+                                    fontSize: 18,
+                                    fontWeight: semiBold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              // width: double.infinity,
+                              height: 56,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(14),
+                                color: kBlackColor,
+                              ),
+                              child: TextButton(
+                                onPressed: () {
+                                  final docMatkul = FirebaseFirestore.instance
+                                      .collection('matkul')
+                                      .doc(matkul.id);
 
-                      docMatkul.delete();
+                                  docMatkul.delete();
+                                  Navigator.of(_).pop();
+                                },
+                                child: Text(
+                                  'Delete',
+                                  style: whiteTextStyle.copyWith(
+                                    fontSize: 18,
+                                    fontWeight: semiBold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
                     },
                     child: Text(
                       'Delete',

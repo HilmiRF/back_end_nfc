@@ -20,6 +20,7 @@ class AddDosen extends StatefulWidget {
 }
 
 class _AddDosenState extends State<AddDosen> {
+  bool isDataError = false;
   PlatformFile? pickedFile;
   UploadTask? uploadTask;
   String urlDownload = '';
@@ -228,6 +229,14 @@ class _AddDosenState extends State<AddDosen> {
             ],
           ),
         ),
+        if (isDataError == true)
+          Container(
+            margin: EdgeInsets.only(top: 10),
+            child: Text(
+              'Masukkan Data dengan Lengkap',
+              style: redTextStyle,
+            ),
+          ),
         Container(
           margin: EdgeInsets.only(
             top: 10,
@@ -312,34 +321,45 @@ class _AddDosenState extends State<AddDosen> {
           ),
           child: TextButton(
             onPressed: () {
-              // uploadFile();
-              // code untuk submit ke firebase
               final namaDosen = namaDosenController.text;
               final nipDosen = nipDosenController.text;
               final emailDosen = emailDosenController.text;
               final passwordDosen = passwordDosenController.text;
               AuthenticationHelper()
-                  .signUp(email: emailDosen, password: passwordDosen)
-                  .then((result) {
-                if (result == null) {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => DosenPage()));
-                } else {
-                  Scaffold.of(context).showSnackBar(SnackBar(
-                    content: Text(
-                      result,
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ));
-                }
-              });
-              createDosen(
-                namaDosen: namaDosen,
-                nipDosen: nipDosen,
-                imageURL: urlDownload,
-                emailDosen: emailDosen,
-              );
-              // add code above
+                  .signUp(email: emailDosen, password: passwordDosen);
+              //     .then((result) {
+              //   if (result == null) {
+              //     Navigator.pushReplacement(context,
+              //         MaterialPageRoute(builder: (context) => DosenPage()));
+              //   } else {
+              //     Scaffold.of(context).showSnackBar(SnackBar(
+              //       content: Text(
+              //         result,
+              //         style: TextStyle(fontSize: 16),
+              //       ),
+              //     ));
+              //   }
+              // });
+              if (namaDosenController.text.isNotEmpty &&
+                  nipDosenController.text.isNotEmpty &&
+                  emailDosenController.text.isNotEmpty &&
+                  passwordDosenController.text.isNotEmpty) {
+                // uploadFile();
+                // code untuk submit ke firebase
+                createDosen(
+                  namaDosen: namaDosen,
+                  nipDosen: nipDosen,
+                  imageURL: urlDownload,
+                  emailDosen: emailDosen,
+                );
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => DosenPage()));
+              } else {
+                setState(() {
+                  isDataError = true;
+                });
+                print('Isi Data');
+              }
             },
             child: Text(
               'Create Dosen',

@@ -16,6 +16,7 @@ class AddMatkul extends StatefulWidget {
 }
 
 class _AddMatkulState extends State<AddMatkul> {
+  bool isDataError = false;
   final TextEditingController namaMatkulController = TextEditingController();
   final TextEditingController kodeMatkulController = TextEditingController();
   final TextEditingController sksMatkulController = TextEditingController();
@@ -180,6 +181,14 @@ class _AddMatkulState extends State<AddMatkul> {
             },
           ),
         ),
+        if (isDataError == true)
+          Container(
+            margin: EdgeInsets.only(top: 10),
+            child: Text(
+              'Masukkan Data dengan Lengkap',
+              style: redTextStyle,
+            ),
+          ),
       ],
     );
   }
@@ -197,22 +206,31 @@ class _AddMatkulState extends State<AddMatkul> {
       ),
       child: TextButton(
         onPressed: () {
-          // code untuk submit ke firebase
-          final namaMatkul = namaMatkulController.text;
-          final kodeMatkul = kodeMatkulController.text;
-          final sksMatkul = sksMatkulController.text;
-          createMatkul(
-            namaMatkul: namaMatkul,
-            kodeMatkul: kodeMatkul,
-            sksMatkul: '$sksMatkul SKS',
-          );
-          Navigator.push(
-            context,
-            new MaterialPageRoute(
-              builder: (context) => new MatkulPage(),
-            ),
-          );
-          // add code above
+          if (namaMatkulController.text.isNotEmpty &&
+              kodeMatkulController.text.isNotEmpty &&
+              sksMatkulController.text.isNotEmpty) {
+            // code untuk submit ke firebase
+            final namaMatkul = namaMatkulController.text;
+            final kodeMatkul = kodeMatkulController.text;
+            final sksMatkul = sksMatkulController.text;
+            createMatkul(
+              namaMatkul: namaMatkul,
+              kodeMatkul: kodeMatkul,
+              sksMatkul: '$sksMatkul SKS',
+            );
+            Navigator.push(
+              context,
+              new MaterialPageRoute(
+                builder: (context) => new MatkulPage(),
+              ),
+            );
+            // add code above
+          } else {
+            setState(() {
+              isDataError = true;
+            });
+            print('Isi Data');
+          }
         },
         child: Text(
           'Create Class',
